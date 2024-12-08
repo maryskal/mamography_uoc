@@ -61,20 +61,21 @@ def train(model_name, frozen_prop, lr, train_df, val_df, class_weights):
 if __name__ == "__main__":
 
     train_df, val_df, _ = load.load_df()
+    train_df = train_df.take(100)
     class_weights = load.explore_dataset(train_df)
     
     # Create dataframe
-    #columns = ['model_name', 'frozen_proportion', 'learning_rate', 
-    #           'val_auc', 'val_accuracy', 'val_loss', 'val_precision']
-    #results_df = pd.DataFrame(columns=columns)
-    #results_df.to_csv('./hyperparameter_results.csv')
+    columns = ['model_name', 'frozen_proportion', 'learning_rate', 
+               'val_auc', 'val_accuracy', 'val_loss', 'val_precision']
+    results_df = pd.DataFrame(columns=columns)
+    results_df.to_csv('./hyperparameter_results.csv')
     
     @scheduler.serial
     def objective(**params):
         print('--------NEW COMBINATION--------')
         print(params)
         results = []
-        for x in range(3):
+        for x in range(2):
             results.append(train(**params, 
                                  train_df=train_df, 
                                  val_df=val_df, 
