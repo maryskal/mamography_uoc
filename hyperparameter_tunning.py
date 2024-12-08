@@ -61,7 +61,7 @@ def train(model_name, frozen_prop, lr, train_df, val_df, class_weights):
 if __name__ == "__main__":
 
     train_df, val_df, _ = load.load_df()
-    train_df = train_df.take(100)
+    train_df = train_df.take(500)
     class_weights = load.explore_dataset(train_df)
     
     # Create dataframe
