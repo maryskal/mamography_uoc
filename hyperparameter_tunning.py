@@ -9,10 +9,6 @@ import preprocess.load_models as md
 import preprocess.load_data as load
 import gc
 
-policy = tf.keras.mixed_precision.experimental.Policy('mixed_float16')
-tf.keras.mixed_precision.experimental.set_policy(policy)
-
-
 param_space = dict(model_name=['CNN', 'ViT'],
                     frozen_prop = uniform(0,1),
                     lr= uniform(1e-5, 1e-3))
@@ -74,10 +70,10 @@ if __name__ == "__main__":
     class_weights = load.explore_dataset(train_df)
     
     # Create dataframe
-#    columns = ['model_name', 'frozen_proportion', 'learning_rate', 
-#               'val_auc', 'val_accuracy', 'val_loss', 'val_precision']
-#    results_df = pd.DataFrame(columns=columns)
-#    results_df.to_csv('./hyperparameter_results.csv')
+    columns = ['model_name', 'frozen_proportion', 'learning_rate', 
+               'val_auc', 'val_accuracy', 'val_loss', 'val_precision']
+    results_df = pd.DataFrame(columns=columns)
+    results_df.to_csv('./hyperparameter_results.csv')
     
     @scheduler.serial
     def objective(**params):
