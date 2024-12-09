@@ -7,6 +7,10 @@ from scipy.stats import uniform
 import json
 import preprocess.load_models as md
 import preprocess.load_data as load
+import gc
+
+policy = tf.keras.mixed_precision.experimental.Policy('mixed_float16')
+tf.keras.mixed_precision.experimental.set_policy(policy)
 
 
 param_space = dict(model_name=['CNN', 'ViT'],
@@ -45,17 +49,22 @@ def train(model_name, frozen_prop, lr, train_df, val_df, class_weights):
         'model_name': model_name,
         'frozen_proportion': frozen_prop,
         'learning_rate': lr,
-        'val_auc': history.history['val_auc'],
-        'val_accuracy': history.history['val_accuracy'],
-        'val_loss': history.history['val_loss'],
-        'val_precision': history.history['val_precision']
+        'val_auc': max(history.history['val_auc']),
+        'val_accuracy': max(history.history['val_accuracy']),
+        'val_loss': max(history.history['val_loss']),
+        'val_precision': max(history.history['val_precision'])
         }
         
     results_df = pd.read_csv('./hyperparameter_results.csv')
     results_df.loc[len(results_df)] = new_row
     results_df.to_csv('./hyperparameter_results.csv', index=False)
 
-    return max(history.history['val_auc'])
+    to_return = max(history.history['val_auc'])
+
+    tf.keras.backend.clear_session()
+    gc.collect()
+
+    return to_return
 
 
 if __name__ == "__main__":
@@ -65,10 +74,10 @@ if __name__ == "__main__":
     class_weights = load.explore_dataset(train_df)
     
     # Create dataframe
-    columns = ['model_name', 'frozen_proportion', 'learning_rate', 
-               'val_auc', 'val_accuracy', 'val_loss', 'val_precision']
-    results_df = pd.DataFrame(columns=columns)
-    results_df.to_csv('./hyperparameter_results.csv')
+#    columns = ['model_name', 'frozen_proportion', 'learning_rate', 
+#               'val_auc', 'val_accuracy', 'val_loss', 'val_precision']
+#    results_df = pd.DataFrame(columns=columns)
+#    results_df.to_csv('./hyperparameter_results.csv')
     
     @scheduler.serial
     def objective(**params):
