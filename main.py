@@ -41,7 +41,7 @@ if __name__ == '__main__':
 
     # DATA PREPARATION
     train_df, val_df, test_df= load.load_df()
-    load.write_to_tfrecord(test_df, 'test_df.tfrecord')
+    load.write_to_tfrecord(test_df, './datasets/test_df.tfrecord')
     class_weights = load.explore_dataset(train_df)
 
     # MODEL PREPARATION

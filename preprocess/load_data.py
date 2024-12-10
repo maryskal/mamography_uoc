@@ -69,9 +69,15 @@ def load_df():
 def write_to_tfrecord(dataset, file_path):
     with tf.io.TFRecordWriter(file_path) as writer:
         for example in dataset:
+            image_data = tf.cast(example[0] * 255, tf.uint8)
+            png_encoded = tf.io.encode_png(image_data)
+
+            labels = example[1].numpy()
+            labels_argmax = np.argmax(labels, axis=1)
+
             features = {
-                'image': tf.train.Feature(bytes_list=tf.train.BytesList(value=[tf.io.encode_jpeg(example[0]).numpy()])),
-                'label': tf.train.Feature(int64_list=tf.train.Int64List(value=[example[1].numpy()]))
+                'image': tf.train.Feature(bytes_list=tf.train.BytesList(value=[png_encoded.numpy().tobytes()])),
+                'label': tf.train.Feature(int64_list=tf.train.Int64List(value=labels_argmax.tolist()))
             }
             tf_example = tf.train.Example(features=tf.train.Features(feature=features))
             writer.write(tf_example.SerializeToString())
