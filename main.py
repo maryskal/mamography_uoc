@@ -52,7 +52,7 @@ if __name__ == '__main__':
     
     callb = tf.keras.callbacks.EarlyStopping(monitor="val_loss", restore_best_weights=True, patience = 3)
 
-    for i in loops:
+    for i in range(loops):
         model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate = lr),
                 loss = 'categorical_crossentropy',
                 metrics = ['accuracy', 'Precision', 'AUC'],

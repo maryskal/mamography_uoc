@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import tensorflow as tf
 import preprocess.dataset_fx as ds
 
 
