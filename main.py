@@ -67,10 +67,10 @@ if __name__ == '__main__':
                         epochs = constants.EPOCHS,
                         shuffle = True)
                         
-        with open(f'results/history_{i}.json', 'w') as f:
+        with open(f'./results/history_{i}.json', 'w') as f:
             json.dump(history.history, f)
 
-        model.save(f'results/model_{i}.h5')
+        model.save(f'./results/model_{i}.h5')
 
     
 
