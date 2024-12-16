@@ -35,12 +35,10 @@ if __name__ == '__main__':
     model = lm.create_ViT(0.4)
     model.load_weights(os.path.join('./results', model_name))
 
-    #raw_dataset = tf.data.TFRecordDataset("test_df.tfrecord")
-    #parsed_dataset = raw_dataset.map(parse_example)
+    raw_dataset = tf.data.TFRecordDataset("test_df.tfrecord")
+    parsed_dataset = raw_dataset.map(parse_example)
 
-    #dataset = (parsed_dataset.shuffle(buffer_size=1000).batch(32).prefetch(buffer_size=tf.data.AUTOTUNE))
-
-    train_df, val_df, dataset= load.load_df()
+    dataset = (parsed_dataset.shuffle(buffer_size=1000).batch(32).prefetch(buffer_size=tf.data.AUTOTUNE))
 
     y_true = []
     y_pred = []
