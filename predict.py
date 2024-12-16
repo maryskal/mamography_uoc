@@ -46,9 +46,10 @@ if __name__ == '__main__':
     y_pred = []
 
     for image_batch, label_batch in dataset:
-        y_true.append(label_batch)
+        print(label_batch.shape)
+        y_true.append(np.argmax(label_batch, axis=-1))
         predictions = model.predict(image_batch)
-        y_pred.append(predictions)
+        y_pred.append(np.argmax(predictions, axis=-1))
 
     y_true = np.concatenate(y_true, axis=0)
     y_pred = np.concatenate(y_pred, axis=0)
