@@ -35,8 +35,8 @@ if __name__ == '__main__':
     model = lm.create_ViT(0.4)
     model.load_weights(os.path.join('./results', model_name))
 
-    raw_dataset = tf.data.TFRecordDataset("test_df.tfrecord")
-    parsed_dataset = raw_dataset.map(parse_example)
+    #raw_dataset = tf.data.TFRecordDataset("test_df.tfrecord")
+    #parsed_dataset = raw_dataset.map(parse_example)
 
     #dataset = (parsed_dataset.shuffle(buffer_size=1000).batch(32).prefetch(buffer_size=tf.data.AUTOTUNE))
 
@@ -46,7 +46,6 @@ if __name__ == '__main__':
     y_pred = []
 
     for image_batch, label_batch in dataset:
-        print(label_batch.shape)
         y_true.append(np.argmax(label_batch, axis=-1))
         predictions = model.predict(image_batch)
         y_pred.append(np.argmax(predictions, axis=-1))
