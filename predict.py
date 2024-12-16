@@ -46,9 +46,9 @@ if __name__ == '__main__':
     y_pred = []
 
     for image_batch, label_batch in dataset:
-        y_true.append(tf.unstack(label_batch, axis=0))
+        y_true.extend(np.array(tf.unstack(label_batch, axis=0)))
         predictions = model.predict(image_batch)
-        y_pred.append(tf.unstack(predictions, axis=0))
+        y_pred.extend(np.array(tf.unstack(predictions, axis=0)))
 
     y_df = pd.DataFrame({'y_real': y_true, 'y_pred': y_pred})
 
