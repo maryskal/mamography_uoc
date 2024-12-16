@@ -70,22 +70,17 @@ def load_df():
 def write_to_tfrecord(dataset, file_path):
     with tf.io.TFRecordWriter(file_path) as writer:
         for example in dataset:
-            # Obtén el batch de imágenes y etiquetas
-            images = tf.cast(example[0] * 255, tf.uint8)  # (32, 256, 256, 1)
-            labels = example[1].numpy()  # (32, num_classes)
-            labels_argmax = np.argmax(labels, axis=1)  # Convierte a etiquetas de clase (32,)
+            images = tf.cast(example[0] * 255, tf.uint8)  
+            labels = example[1].numpy()  
+            labels_argmax = np.argmax(labels, axis=1)  
 
-            # Itera sobre cada imagen y su correspondiente etiqueta
             for i in range(images.shape[0]):
-                # Codifica cada imagen individualmente como PNG
                 png_encoded = tf.io.encode_png(images[i])
 
-                # Crea las características de TensorFlow
                 features = {
                     'image': tf.train.Feature(bytes_list=tf.train.BytesList(value=[png_encoded.numpy()])),
                     'label': tf.train.Feature(int64_list=tf.train.Int64List(value=[labels_argmax[i]]))
                 }
 
-                # Crea un Example
                 tf_example = tf.train.Example(features=tf.train.Features(feature=features))
                 writer.write(tf_example.SerializeToString())

@@ -4,29 +4,22 @@ import tensorflow as tf
 import pandas as pd
 import argparse
 import preprocess.load_models as lm
-import preprocess.dataset_fx as dffx
+import preprocess.load_data as load
 
 
-def parse_tfrecord(example_proto):
-    feature_description = {
-        'image': tf.io.FixedLenFeature([], tf.string),  
-        'label': tf.io.VarLenFeature(tf.int64),        
-    }
-    parsed_features = tf.io.parse_single_example(example_proto, feature_description)
-    
-    image = tf.io.decode_png(parsed_features['image'], channels=1)
-    image = tf.image.convert_image_dtype(image, tf.float32)
+feature_description = {
+    'image': tf.io.FixedLenFeature([], tf.string),
+    'label': tf.io.FixedLenFeature([], tf.int64)
+}
 
-    label = tf.sparse.to_dense(parsed_features['label'])
+
+def parse_example(example_proto):
+    parsed_example = tf.io.parse_single_example(example_proto, feature_description)
+    image = tf.io.decode_png(parsed_example['image'], channels=1)     
+    label = tf.sparse.to_dense(parsed_example['label'])
+    image = tf.cast(image, tf.float32) / 255.0
     
     return image, label
-
-
-def load_tfrecord(file_path, batch_size=32):
-    dataset = tf.data.TFRecordDataset(file_path)
-    dataset = dataset.map(parse_tfrecord)
-    dataset = dataset.shuffle(1000).batch(batch_size).prefetch(tf.data.experimental.AUTOTUNE)
-    return dataset
 
 
 if __name__ == '__main__':
@@ -42,17 +35,25 @@ if __name__ == '__main__':
     model = lm.create_ViT(0.4)
     model.load_weights(os.path.join('./results', model_name))
 
-    tfrecord_path = './datasets/test_df.tfrecord'
-    dataset = load_tfrecord(tfrecord_path)
+    #raw_dataset = tf.data.TFRecordDataset("test_df.tfrecord")
+    #parsed_dataset = raw_dataset.map(parse_example)
+
+    #dataset = (parsed_dataset.shuffle(buffer_size=1000).batch(32).prefetch(buffer_size=tf.data.AUTOTUNE))
+
+    train_df, val_df, dataset= load.load_df()
 
     y_true = []
-    for image, label in dataset:
-        y_true.append(label.numpy())
-        print(image.shape)
-        print(label)
+    y_pred = []
+
+    for image_batch, label_batch in dataset:
+        label_batch_dense = tf.sparse.to_dense(label_batch).numpy()  
+        y_true.append(label_batch_dense)
+        predictions = model.predict(image_batch)
+        y_pred.append(predictions)
+
     y_true = np.concatenate(y_true, axis=0)
-    y_pred = model.predict(dataset)
+    y_pred = np.concatenate(y_pred, axis=0)
 
-    y_df = pd.DataFrame({'y_real':y_true, 'y_pred':y_pred})
+    y_df = pd.DataFrame({'y_real': y_true.flatten(), 'y_pred': y_pred.flatten()})
 
-    y_df.to_csv('./results/y_df.csv')
+    y_df.to_csv('./results/y_df.csv', index=False)
