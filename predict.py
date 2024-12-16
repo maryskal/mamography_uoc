@@ -27,7 +27,7 @@ if __name__ == '__main__':
     parser.add_argument('-m',
                         '--model',
                         type=str,
-                        default='model_1.h5',
+                        default='model_2.h5',
                         help="model to predict with")
     args = parser.parse_args()
 
@@ -46,13 +46,10 @@ if __name__ == '__main__':
     y_pred = []
 
     for image_batch, label_batch in dataset:
-        y_true.append(np.argmax(label_batch, axis=-1))
+        y_true.append(label_batch)
         predictions = model.predict(image_batch)
-        y_pred.append(np.argmax(predictions, axis=-1))
+        y_pred.append(predictions)
 
-    y_true = np.concatenate(y_true, axis=0)
-    y_pred = np.concatenate(y_pred, axis=0)
-
-    y_df = pd.DataFrame({'y_real': y_true.flatten(), 'y_pred': y_pred.flatten()})
+    y_df = pd.DataFrame({'y_real': y_true, 'y_pred': y_pred})
 
     y_df.to_csv('./results/y_df.csv', index=False)
