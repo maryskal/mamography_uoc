@@ -27,7 +27,7 @@ if __name__ == '__main__':
     parser.add_argument('-m',
                         '--model',
                         type=str,
-                        default='model_2.h5',
+                        default='model_1.h5',
                         help="model to predict with")
     args = parser.parse_args()
 
