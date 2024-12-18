@@ -47,7 +47,7 @@ def train(model_name, frozen_prop, lr, train_df, val_df, class_weights):
         'learning_rate': lr,
         'val_auc': max(history.history['val_auc']),
         'val_accuracy': max(history.history['val_accuracy']),
-        'val_loss': max(history.history['val_loss']),
+        'val_loss': min(history.history['val_loss']),
         'val_precision': max(history.history['val_precision'])
         }
         
