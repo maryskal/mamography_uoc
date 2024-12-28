@@ -66,7 +66,7 @@ Parámetros:
 
 Para realizar predicciones con un modelo entrenado:
 ```bash
-python predict.py --model model_1.h5
+python predict.py --model [pesos de tu modelo ya entrenado en .h5]
 ```
 
 ---
@@ -93,7 +93,7 @@ python predict.py --model model_1.h5
 ## Resultados
 
 - Los resultados de los entrenamientos y las métricas se almacenan en `./results/`.
-- Los modelos entrenados se guardan como archivos `.h5`.
+- Los pesos de los modelos entrenados se guardan como archivos `.h5`.
 - El ajuste de hiperparámetros genera un resumen en `hyperparameter_tuning_results.csv`.
 
 ---
@@ -107,7 +107,7 @@ python predict.py --model model_1.h5
 
 ## Licencia
 
-Este proyecto se distribuye bajo [tu tipo de licencia].
+Este proyecto se distribuye bajo MIT.
 
 ---
 
