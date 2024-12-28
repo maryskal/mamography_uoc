@@ -119,4 +119,4 @@ Las contribuciones son bienvenidas. Por favor, crea un fork del repositorio, rea
 
 ## Contacto
 
-Para dudas o comentarios, puedes contactar a [tu_email@example.com].
+Para dudas o comentarios, puedes contactar a [maryskal.projects@gmail.com].
